@@ -40,39 +40,62 @@ class NBPCurrenciesApp extends Component {
     }
 
     addToFavorite = (event) => {
-        event.preventDefault();
-
-        const value = event.target.value;
+        const target = event.target;
+        const value = target.value;
         const arrayOfFavorite = [value, ...this.state.favorite];
         
         this.setState({favorite: arrayOfFavorite});
+
+        this.disableAddButton(target);
     }
 
-    removeFromFavorite = (event) => {
-        event.preventDefault();
+    remove = (event) => {
+        const target = event.target;
+        const value = target.value;
 
-        const value = event.target.value;
+        this.removeFromFavorite(value);
+    }
 
+    removeFromFavorite = (value) => {
         const filterFavorite = this.state.favorite.filter((item) => {
             return item !== value;
         });
-        console.log(value, filterFavorite);
-        // const arrayOfFavorite = [target, ...this.state.favorite];
+
+        this.enableAddButton(value);
 
         this.setState({ favorite: filterFavorite });
+    }
+
+    removeAll = () => {
+        this.state.favorite.forEach((item, index) => {
+            this.removeFromFavorite(item);
+        })
+
+        // this.setState({ favorite: filterFavorite });
+        // this.enableAddButton(target);
+    }
+
+    disableAddButton(target) {
+        target.disabled = true;
+    }
+
+    enableAddButton(value) {
+        const button = document.querySelector(`ul.list button[value='${value}']`);
+        
+        button.disabled = false;
     }
 
     render() {
         const { data, favorite, error, isLoading } = this.state;
 
         const favoriteList = favorite.map((value) => {
-            // return <CreateNewFavorite value={ value } onRemove={this.removeFromFavorite} />;
-            return (
-                <li key={value}>
-                    <span className="">{value}</span>
-                    <button type="button" className="inList" value={value} onClick={this.removeFromFavorite}>{'Remove'}</button>
-                </li>
-            );
+            return <CreateNewFavorite value={ value } onRemove={this.remove} />;
+            // return (
+        //         <li key={value}>
+        //             <span className="">{value}</span>
+        //             <button type="button" value={value} onClick={this.remove}>{'Remove'}</button>
+        //         </li>
+            // );
         });
 
         if (error) {
@@ -84,8 +107,14 @@ class NBPCurrenciesApp extends Component {
         } else {
             return (
                 <section className="container">
-                    <ListOfAllCurrency currenciesList={data} onAdd={this.addToFavorite} />
-                    <ul>{favoriteList}</ul>
+                    <ListOfAllCurrency className="list" currenciesList={data} onAdd={this.addToFavorite} />
+                    <div className="list">
+                        <ul>{favoriteList}</ul>
+                        {
+                            this.state.favorite.length > 0 &&
+                            <button type="button" onClick={this.removeAll}>{'Remove All'}</button>
+                        }
+                    </div>
                 </section>
             );
         }

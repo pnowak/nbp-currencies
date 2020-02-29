@@ -5,7 +5,8 @@
   font-family: 'Poppins', sans-serif;
 }
 
-ul {
+.list,
+.list ul {
   list-style: none;
   flex-direction: column;
 }
@@ -18,13 +19,17 @@ li {
 button {
   padding: 0.4em 1.1em;
   margin: 0 0.5em 0.5em 1em;
-  background-color: #141414;
-  color: #fff;
-  border: 2px solid #fff;
+  background-color: #fff;
+  color: #141414;
+  border: 2px solid #141414;
   text-align: center;
   text-decoration: none;
   font-family: 'Poppins', sans-serif;
   font-weight: 500;
   font-size: 1.1em;
   cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
 }
