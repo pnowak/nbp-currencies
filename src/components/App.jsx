@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import ListOfAllCurrency from './ListOfAllCurrency';
-import CreateNewFavourite from './CreateNewFavourite';
+import CreateElementList from './CreateElementList';
 
 const API = 'https://api.nbp.pl/api/exchangerates/tables/c?format=json';
 
@@ -93,14 +92,12 @@ class NBPCurrenciesApp extends Component {
     render() {
         const { data, favourite, error, isLoading } = this.state;
 
+        const AllCurrencyList = data && data.map((value) => {
+            return <CreateElementList desc={'Add'} key={value.code} value={value.currency} onAction={this.add} />;
+        });
+
         const favouriteList = favourite.map((value) => {
-            return <CreateNewFavourite value={value} onRemove={this.remove} />;
-            // return (
-        //         <li key={value}>
-        //             <span className="">{value}</span>
-        //             <button type="button" value={value} onClick={this.remove}>{'Remove'}</button>
-        //         </li>
-            // );
+            return <CreateElementList desc={'Remove'} key={value} value={value} onAction={this.remove} />;
         });
 
         if (error) {
@@ -112,7 +109,7 @@ class NBPCurrenciesApp extends Component {
         } else {
             return (
                 <section className="container">
-                    <ListOfAllCurrency currenciesList={data} onAdd={this.add} />
+                    <ul className="list">{AllCurrencyList}</ul>
                     <div className="list">
                         <ul>{favouriteList}</ul>
                         {
