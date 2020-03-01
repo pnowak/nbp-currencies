@@ -17,6 +17,7 @@ class NBPCurrenciesApp extends Component {
             .then(response => response.json())
             .then(data => {
                 const currencies = data[0].rates;
+                console.log(data, currencies);
 
                 this.setState({
                     data: currencies,
@@ -25,7 +26,7 @@ class NBPCurrenciesApp extends Component {
             })
             .catch((error) => {
                 this.setState({
-                    isLoaded: true,
+                    isLoading: true,
                     error
                 });
             });
