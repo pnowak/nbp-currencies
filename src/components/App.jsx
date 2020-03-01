@@ -17,7 +17,6 @@ class NBPCurrenciesApp extends Component {
             .then(response => response.json())
             .then(data => {
                 const currencies = data[0].rates;
-                console.log(data, currencies);
 
                 this.setState({
                     data: currencies,
