@@ -6,7 +6,7 @@ const ListOfAllCurrency = ({ currenciesList, onAdd}) => (
         {currenciesList.map(currency => (
             <li key={ currency.code }>
                 <span>{currency.currency}</span>
-                <button type="button" value={currency.currency} onClick={onAdd}>{ 'Add' }</button>
+                <button type="button" value={currency.currency} onClick={onAdd}>{'Add'}</button>
             </li>
         ))}
     </ul>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ListOfAllCurrency from './ListOfAllCurrency';
-import CreateNewFavorite from './CreateNewFavorite';
+import CreateNewFavourite from './CreateNewFavourite';
 
 const API = 'https://api.nbp.pl/api/exchangerates/tables/c?format=json';
 
@@ -10,22 +10,15 @@ class NBPCurrenciesApp extends Component {
         data: null,
         error: null,
         isLoading: false,
-        favorite: []
+        favourite: []
     };
 
     componentDidMount() {
         fetch(API)
             .then(response => response.json())
             .then(data => {
-                console.log(data, data[0].rates);
                 const currencies = data[0].rates;
 
-                // this.setState((state, props) => {
-                //     return {
-                //         data: currencies,
-                //         isLoading: true
-                //     }
-                // });
                 this.setState({
                     data: currencies,
                     isLoading: true
@@ -39,40 +32,52 @@ class NBPCurrenciesApp extends Component {
             });
     }
 
-    addToFavorite = (event) => {
+    add = (event) => {
         const target = event.target;
         const value = target.value;
-        const arrayOfFavorite = [value, ...this.state.favorite];
         
-        this.setState({favorite: arrayOfFavorite});
-
-        this.disableAddButton(target);
+        this.addToFavourite(target, value);
     }
 
     remove = (event) => {
         const target = event.target;
         const value = target.value;
 
-        this.removeFromFavorite(value);
+        this.removeFromFavourite(value);
     }
 
-    removeFromFavorite = (value) => {
-        const filterFavorite = this.state.favorite.filter((item) => {
+    addToFavourite = (target, value) => {
+        const arrayOfFavourite = [value, ...this.state.favourite];
+        
+        this.setState({ favourite: arrayOfFavourite});
+
+        this.disableAddButton(target);
+    }
+
+    removeFromFavourite = (value) => {
+        const filterFavourite = this.state.favourite.filter((item) => {
             return item !== value;
         });
 
-        this.enableAddButton(value);
+        this.setState({ favourite: filterFavourite });
 
-        this.setState({ favorite: filterFavorite });
+        this.enableAddButton(value);
     }
 
     removeAll = () => {
-        this.state.favorite.forEach((item, index) => {
-            this.removeFromFavorite(item);
+        const copyOfFavourite = [...this.state.favourite];
+
+        copyOfFavourite.forEach((favourite) => {
+            this.enableAddButton(favourite);
         })
 
-        // this.setState({ favorite: filterFavorite });
-        // this.enableAddButton(target);
+        this.setState((state) => {
+            state.favourite.length = 0;
+            
+            return {
+                favourite: state.favourite
+            }
+        });
     }
 
     disableAddButton(target) {
@@ -86,10 +91,10 @@ class NBPCurrenciesApp extends Component {
     }
 
     render() {
-        const { data, favorite, error, isLoading } = this.state;
+        const { data, favourite, error, isLoading } = this.state;
 
-        const favoriteList = favorite.map((value) => {
-            return <CreateNewFavorite value={ value } onRemove={this.remove} />;
+        const favouriteList = favourite.map((value) => {
+            return <CreateNewFavourite value={value} onRemove={this.remove} />;
             // return (
         //         <li key={value}>
         //             <span className="">{value}</span>
@@ -107,12 +112,12 @@ class NBPCurrenciesApp extends Component {
         } else {
             return (
                 <section className="container">
-                    <ListOfAllCurrency className="list" currenciesList={data} onAdd={this.addToFavorite} />
+                    <ListOfAllCurrency currenciesList={data} onAdd={this.add} />
                     <div className="list">
-                        <ul>{favoriteList}</ul>
+                        <ul>{favouriteList}</ul>
                         {
-                            this.state.favorite.length > 0 &&
-                            <button type="button" onClick={this.removeAll}>{'Remove All'}</button>
+                            this.state.favourite.length > 0 &&
+                            <button className="removeAll" type="button" onClick={this.removeAll}>{'Remove All'}</button>
                         }
                     </div>
                 </section>
